@@ -1,0 +1,12 @@
+node_modules
+**/node_modules
+frontend/node_modules
+bin
+obj
+publish_output
+publish_output_*
+*.log
+*.user
+.vscode
+dist
+build

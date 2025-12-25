@@ -1,0 +1,10 @@
+services:
+  - type: web
+    name: university-rating
+    env: docker
+    plan: free
+    dockerfilePath: ./Dockerfile
+    instanceType: starter
+    envVars:
+      - key: ASPNETCORE_ENVIRONMENT
+        value: Production
