@@ -23,4 +23,7 @@ jobs:
       - name: Validate render.yaml against Render JSON Schema
         run: |
           echo "Validating render.yaml..."
-          ajv validate -s https://render.com/schema/render.yaml.json -d render.yaml --strict=false
+          # Download schema locally first to avoid remote resolution issues in ajv-cli
+          curl -sSfL https://render.com/schema/render.yaml.json -o render.schema.json
+          cat render.schema.json | jq '.title, .$id' || true
+          ajv validate -s render.schema.json -d render.yaml --strict=false
