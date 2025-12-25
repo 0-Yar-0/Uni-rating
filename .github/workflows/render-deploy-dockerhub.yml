@@ -57,12 +57,7 @@ jobs:
             http://*|https://*) ;;
             *) echo "Error: RENDER_DEPLOY_HOOK must start with http:// or https://"; exit 1;;
           esac
-          HOST=$(python - <<'PY'
-import sys,urllib.parse
-u=urllib.parse.urlparse(sys.argv[1])
-print(u.netloc or '')
-PY
-"$RENDER_DEPLOY_HOOK")
+          HOST=$(python -c "import urllib.parse,sys;print(urllib.parse.urlparse(sys.argv[1]).netloc or '')" "$RENDER_DEPLOY_HOOK")
           echo "Deploy hook host: $HOST"
           echo "Deploying image: $IMAGE"
           ENCODED=$(python -c "import urllib.parse,sys;print(urllib.parse.quote(sys.argv[1], safe=''))" "$IMAGE")

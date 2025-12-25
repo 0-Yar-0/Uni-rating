@@ -62,12 +62,7 @@ jobs:
             *) echo "Error: RENDER_DEPLOY_HOOK must start with http:// or https://"; exit 1;;
           esac
           # Show host for debugging without printing the full secret
-          HOST=$(python - <<'PY'
-import sys,urllib.parse
-u=urllib.parse.urlparse(sys.argv[1])
-print(u.netloc or '')
-PY
-"$RENDER_DEPLOY_HOOK")
+          HOST=$(python -c "import urllib.parse,sys;print(urllib.parse.urlparse(sys.argv[1]).netloc or '')" "$RENDER_DEPLOY_HOOK")
           echo "Deploy hook host: $HOST"
           echo "Deploying image: $IMAGE"
           ENCODED=$(python -c "import urllib.parse,sys;print(urllib.parse.quote(sys.argv[1], safe=''))" "$IMAGE")
@@ -108,4 +103,6 @@ PY
           exit 1
 
       - name: Notify
-        run: echo "Deployed image ghcr.io/${{ github.repository_owner }}/unirating:${{ github.sha }} to Render (deploy hook called)."
+        run: |
+          echo "Deployed image ghcr.io/${{ steps.vars.outputs.owner_lower }}/unirating:${{ github.sha }} to Render (deploy hook called)."
+          echo "If you provided RENDER_SERVICE_URL, the workflow also performed a smoke test."

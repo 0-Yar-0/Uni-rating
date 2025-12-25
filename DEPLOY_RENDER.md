@@ -17,8 +17,16 @@ Two quick options:
 ## Automatic deploys from GitHub Actions (recommended)
 You can set up GitHub Actions to build your Docker image, push it to GitHub Container Registry (GHCR), and trigger a Render deploy automatically.
 
-1. Create repository secret `RENDER_DEPLOY_HOOK` with the Deploy Hook URL from Render (found in your service Settings → Deploy Hooks).
+1. Create repository secret `RENDER_DEPLOY_HOOK` with the Deploy Hook URL from Render (found in your service Settings → Deploy Hooks). The Deploy Hook URL looks like this:
+
+```
+https://api.render.com/deploy/srv-XXXXXXXX?key=YYYYYYYYYYYYYYYY
+```
+
+Be sure to paste the full URL (including the `?key=...`) as the secret.
+
 2. (Optional) Create repository secret `RENDER_SERVICE_URL` with the full URL of your deployed service (e.g. `https://university-rating.onrender.com`). If provided, the workflow will run a smoke test that polls this URL and fails the job if the service does not respond with HTTP 200 within the timeout.
+
 3. GitHub Actions workflow `.github/workflows/render-deploy.yml` is included in this repo and will run on push to `main`. It:
    - Builds and pushes the image to `ghcr.io/<your-org>/unirating:<sha>` and `:latest`.
    - Calls the Render deploy hook with `imgURL` pointing to the newly pushed image so Render pulls and deploys it.
