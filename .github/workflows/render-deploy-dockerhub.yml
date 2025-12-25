@@ -21,6 +21,12 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_PASSWORD }}
 
+      - name: Compute lowercase Docker Hub username
+        id: dhvars
+        run: |
+          USER_LOWER=$(echo "${{ secrets.DOCKERHUB_USERNAME }}" | tr '[:upper:]' '[:lower:]')
+          echo "dh_user_lower=$USER_LOWER" >> $GITHUB_OUTPUT
+
       - name: Build and push Docker image to Docker Hub
         uses: docker/build-push-action@v5
         with:
@@ -28,13 +34,13 @@ jobs:
           file: ./Dockerfile
           push: true
           tags: |
-            docker.io/${{ secrets.DOCKERHUB_USERNAME }}/unirating:${{ github.sha }}
-            docker.io/${{ secrets.DOCKERHUB_USERNAME }}/unirating:latest
+            docker.io/${{ steps.dhvars.outputs.dh_user_lower }}/unirating:${{ github.sha }}
+            docker.io/${{ steps.dhvars.outputs.dh_user_lower }}/unirating:latest
           platforms: linux/amd64
 
       - name: Trigger Render deploy (via deploy hook)
         env:
-          IMAGE: docker.io/${{ secrets.DOCKERHUB_USERNAME }}/unirating:${{ github.sha }}
+          IMAGE: docker.io/${{ steps.dhvars.outputs.dh_user_lower }}/unirating:${{ github.sha }}
           RENDER_DEPLOY_HOOK: ${{ secrets.RENDER_DEPLOY_HOOK }}
         run: |
           echo "Deploying image: $IMAGE"

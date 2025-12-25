@@ -25,6 +25,12 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Compute lowercase owner
+        id: vars
+        run: |
+          OWNER_LOWER=$(echo "${{ github.repository_owner }}" | tr '[:upper:]' '[:lower:]')
+          echo "owner_lower=$OWNER_LOWER" >> $GITHUB_OUTPUT
+
       - name: Build and push Docker image
         uses: docker/build-push-action@v5
         with:
@@ -32,13 +38,13 @@ jobs:
           file: ./Dockerfile
           push: true
           tags: |
-            ghcr.io/${{ github.repository_owner }}/unirating:${{ github.sha }}
-            ghcr.io/${{ github.repository_owner }}/unirating:latest
+            ghcr.io/${{ steps.vars.outputs.owner_lower }}/unirating:${{ github.sha }}
+            ghcr.io/${{ steps.vars.outputs.owner_lower }}/unirating:latest
           platforms: linux/amd64
 
       - name: Trigger Render deploy (via deploy hook)
         env:
-          IMAGE: ghcr.io/${{ github.repository_owner }}/unirating:${{ github.sha }}
+          IMAGE: ghcr.io/${{ steps.vars.outputs.owner_lower }}/unirating:${{ github.sha }}
           RENDER_DEPLOY_HOOK: ${{ secrets.RENDER_DEPLOY_HOOK }}
         run: |
           echo "Deploying image: $IMAGE"
