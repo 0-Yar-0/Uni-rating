@@ -8,3 +8,12 @@ services:
     envVars:
       - key: ASPNETCORE_ENVIRONMENT
         value: Production
+      # Recommended (set these values in Render dashboard, do not commit secrets to repo)
+      - key: ConnectionStrings__DefaultConnection
+        value: ""
+      - key: Jwt__Key
+        value: ""
+      - key: Jwt__Issuer
+        value: ""
+      - key: Jwt__Audience
+        value: ""

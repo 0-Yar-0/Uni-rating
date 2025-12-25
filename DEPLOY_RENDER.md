@@ -14,6 +14,32 @@ Two quick options:
      - Any other secrets you use in `appsettings.*.json`
    - Deploy: Render will build the Docker image and run the service. The web app will be available at the provided Render URL.
 
+### render.yaml example with placeholders
+You can include environment variable placeholders directly in `render.yaml` (do not put real secrets in the file; set them in the Render dashboard after creating the service):
+
+```yaml
+services:
+  - type: web
+    name: university-rating
+    env: docker
+    plan: free
+    dockerfilePath: ./Dockerfile
+    instanceType: starter
+    envVars:
+      - key: ASPNETCORE_ENVIRONMENT
+        value: Production
+      - key: ConnectionStrings__DefaultConnection
+        value: ""
+      - key: Jwt__Key
+        value: ""
+      - key: Jwt__Issuer
+        value: ""
+      - key: Jwt__Audience
+        value: ""
+```
+
+After creating the service in the Render dashboard, open **Environment** → **Environment Variables** and set the real values there. If you want a managed database, you can create a Render Postgres instance and use its connection string as `ConnectionStrings__DefaultConnection`.
+
 ## Automatic deploys from GitHub Actions (recommended)
 You can set up GitHub Actions to build your Docker image, push it to GitHub Container Registry (GHCR), and trigger a Render deploy automatically.
 
