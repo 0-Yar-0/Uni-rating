@@ -31,12 +31,18 @@ jobs:
           OWNER_LOWER=$(echo "${{ github.repository_owner }}" | tr '[:upper:]' '[:lower:]')
           echo "owner_lower=$OWNER_LOWER" >> $GITHUB_OUTPUT
 
+      - name: Final image tags
+        run: |
+          echo "IMAGE_SHA=ghcr.io/${{ steps.vars.outputs.owner_lower }}/unirating:${{ github.sha }}"
+          echo "IMAGE_LATEST=ghcr.io/${{ steps.vars.outputs.owner_lower }}/unirating:latest"
+
       - name: Build and push Docker image
         uses: docker/build-push-action@v5
         with:
           context: .
           file: ./Dockerfile
           push: true
+          no-cache: true
           tags: |
             ghcr.io/${{ steps.vars.outputs.owner_lower }}/unirating:${{ github.sha }}
             ghcr.io/${{ steps.vars.outputs.owner_lower }}/unirating:latest

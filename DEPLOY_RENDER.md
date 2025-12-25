@@ -52,7 +52,7 @@ Notes for Docker Hub users:
    - Push to a registry and deploy to your cloud provider or Render's private registry.
 
 Notes:
-- The `Dockerfile` builds the frontend first (Node) and then the backend with the frontend assets embedded into `wwwroot`.
+- The `Dockerfile` builds the frontend first (Node) and then the backend with the frontend assets embedded into `wwwroot`. The Docker build explicitly **skips** the MSBuild frontend build step by passing `-p:SkipFrontendBuild=true` to `dotnet publish` because the frontend is already built in an earlier stage.
 - You can control the build via `render.yaml` or through Render's UI. If you prefer a non-Docker Render setup, you can also create a web service that runs `npm ci && npm run build && dotnet publish ...` as the build command and starts with `dotnet backend/publish_output/backend.dll`.
 
 If you want, I can also add a GitHub Actions workflow that runs tests and optionally triggers Render deploys on push to `main` (or build the Docker image and push to a registry). Which would you prefer?

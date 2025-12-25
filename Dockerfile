@@ -15,7 +15,8 @@ COPY . .
 RUN mkdir -p backend/wwwroot
 COPY --from=node-build /app/frontend/dist backend/wwwroot/
 
-RUN dotnet publish backend/backend.csproj -c Release -o /app/publish
+# Skip frontend MSBuild step (built earlier in node-build stage) to avoid requiring npm in the SDK image
+RUN dotnet publish backend/backend.csproj -c Release -o /app/publish -p:SkipFrontendBuild=true
 
 # Runtime image
 FROM mcr.microsoft.com/dotnet/aspnet:9.0 AS runtime
