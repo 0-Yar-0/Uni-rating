@@ -1,0 +1,26 @@
+name: Validate Render Blueprint
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+
+jobs:
+  validate-blueprint:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+
+      - name: Install ajv-cli
+        run: npm install -g ajv-cli@5
+
+      - name: Validate render.yaml against Render JSON Schema
+        run: |
+          echo "Validating render.yaml..."
+          ajv validate -s https://render.com/schema/render.yaml.json -d render.yaml --strict=false

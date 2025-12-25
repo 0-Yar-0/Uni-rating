@@ -40,6 +40,18 @@ services:
 
 After creating the service in the Render dashboard, open **Environment** → **Environment Variables** and set the real values there. If you want a managed database, you can create a Render Postgres instance and use its connection string as `ConnectionStrings__DefaultConnection`.
 
+## Validate `render.yaml` locally or in CI
+You can validate your `render.yaml` against Render's Blueprint JSON Schema to catch errors early.
+
+Locally (requires Node.js):
+
+```bash
+npm install -g ajv-cli
+ajv validate -s https://render.com/schema/render.yaml.json -d render.yaml --strict=false
+```
+
+CI: a GitHub Actions job `validate-render-blueprint.yml` is included and will validate the file on pushes and pull requests.
+
 ## Automatic deploys from GitHub Actions (recommended)
 You can set up GitHub Actions to build your Docker image, push it to GitHub Container Registry (GHCR), and trigger a Render deploy automatically.
 
