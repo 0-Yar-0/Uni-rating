@@ -4,8 +4,8 @@ services:
     env: docker
     plan: free
     dockerfilePath: ./Dockerfile
-    instanceType: starter
-    envVars:
+    instanceType: free
+        envVars:
       - key: ASPNETCORE_ENVIRONMENT
         value: Production
       # Recommended (do NOT commit real secrets here; set them in Render dashboard after creating the service)
